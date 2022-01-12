@@ -19,7 +19,7 @@ The plugin declaration in pom-file:
     <plugin>
       <groupId>com.jdotsoft</groupId>
       <artifactId>svn-latest-revision-maven-plugin</artifactId>
-      <version>1.0</version>
+      <version>1.1</version>
       <executions>
         <execution>
           <goals>
@@ -28,19 +28,19 @@ The plugin declaration in pom-file:
         </execution>
       </executions>
       <configuration>
-        <timestampFormat>dd-MMM-yyyy HH:ss</timestampFormat>
+        <timestampFormat>dd-MMM-yyyy HH:mm</timestampFormat>
       </configuration>
     </plugin>
 
-The configuration `timestampFormat` is optional, the default value is `dd-MMM-yyyy HH:ss`
+The configuration `timestampFormat` is optional, the default value is `dd-MMM-yyyy HH:mm`
 
 Example plugin console output:
 
-    [INFO] --- svn-latest-revision-maven-plugin:1.0:run (default) @ MyProject ---
+    [INFO] --- svn-latest-revision-maven-plugin:1.1:run (default) @ MyProject ---
     [INFO] Opening SQLite SVN database file C:\projects\MyProject\.svn\wc.db
     [INFO] Connected to DB. Latest revision:
-    [INFO]   1929 18-Dec-2021 20:09 | MyProject/src/main/java/com/jdotsoft/demo/Abc.java
-    [INFO]   1929 18-Dec-2021 20:09 | MyProject/src/main/java/com/jdotsoft/demo/Xyz.java
+    [INFO]   1929 12-Jan-2022 20:09 | MyProject/src/main/java/com/jdotsoft/demo/Abc.java
+    [INFO]   1929 12-Jan-2022 20:09 | MyProject/src/main/java/com/jdotsoft/demo/Xyz.java
 
 Maven properties defined by this plugin execution could be used, for example, in a `MANIFEST.MF` file:
 

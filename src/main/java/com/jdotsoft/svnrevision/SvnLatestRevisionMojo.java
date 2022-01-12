@@ -49,7 +49,7 @@ public class SvnLatestRevisionMojo extends AbstractMojo {
   @Parameter(defaultValue="${project}", required=true, readonly=true)
   private MavenProject project;
 
-  @Parameter(defaultValue="yyyy-dd-MMM zzz", required=false, readonly=true)
+  @Parameter(defaultValue="dd-MMM-yyyy HH:mm", required=false, readonly=true)
   private String timestampFormat;
 
   @Override
