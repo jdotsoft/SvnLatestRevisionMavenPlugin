@@ -41,10 +41,13 @@ public class SvnLatestRevisionMojo extends AbstractMojo {
   private static final String PROPERTY_LOCAL_BUILD_TIMESTAMP = "local.build.timestamp";
   private static final String PROPERTY_SVN_LATEST_REVISION = "svn.latest.revision";
   private static final String PROPERTY_SVN_LATEST_TIMESTAMP = "svn.latest.timestamp";
-  private static final String SQL = "SELECT * FROM nodes WHERE revision = (SELECT MAX(revision) FROM nodes)";
+  private static final String DB_TABLE_NODES = "nodes";
   private static final String DB_COLUMN_REVISION = "revision";
   private static final String DB_COLUMN_CHANGED_DATE = "changed_date";
   private static final String DB_COLUMN_REPOS_PATH = "repos_path";
+  private static final String SQL = "SELECT * FROM " + DB_TABLE_NODES
+      + " WHERE " + DB_COLUMN_REVISION + " = (SELECT MAX(" + DB_COLUMN_REVISION + ") FROM " + DB_TABLE_NODES + ")"
+      + " ORDER BY " + DB_COLUMN_REPOS_PATH;
 
   @Parameter(defaultValue="${project}", required=true, readonly=true)
   private MavenProject project;
@@ -72,9 +75,12 @@ public class SvnLatestRevisionMojo extends AbstractMojo {
       while (rs.next()) {
         // Revision and timestamp are the same for all SQL query records: the last record is effective
         int nRevision = rs.getInt(DB_COLUMN_REVISION);
-        String sTimestamp = fmt.format(new Date(rs.getLong(DB_COLUMN_CHANGED_DATE) / 1000)); // check-in UNIX timestamp
+        long changedDate = rs.getLong(DB_COLUMN_CHANGED_DATE); // check-in UNIX timestamp in sec
+        String sTimestamp = changedDate == 0 ? "<timestamp unknown>" : fmt.format(new Date(changedDate / 1000));
         prop.setProperty(PROPERTY_SVN_LATEST_REVISION, Integer.toString(nRevision));
-        prop.setProperty(PROPERTY_SVN_LATEST_TIMESTAMP, sTimestamp);
+        if (changedDate > 0) {
+          prop.setProperty(PROPERTY_SVN_LATEST_TIMESTAMP, sTimestamp);
+        }
         logger.info(String.format("  %d %s | %s", nRevision, sTimestamp, rs.getString(DB_COLUMN_REPOS_PATH)));
       }
     } catch (SQLException e) {
